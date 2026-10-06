@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра в Кальмара: Путеводитель по сезонам</title>
+    <style>
+        /* --- Базовые стили и шрифты --- */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0d0d0d;
+            color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Анимированный фон --- */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #1a001a, #0d0d0d, #001a1a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Плавающие фигуры (круг, треугольник, квадрат) */
+        .floating-shape {
+            position: fixed;
+            opacity: 0.05;
+            z-index: -1;
+            animation: float 10s infinite ease-in-out;
+        }
+        .shape-circle { width: 150px; height: 150px; border-radius: 50%; border: 5px solid #ff0055; top: 10%; left: 5%; animation-delay: 0s; }
+        .shape-triangle { width: 0; height: 0; border-left: 75px solid transparent; border-right: 75px solid transparent; border-bottom: 130px solid #00ffcc; top: 60%; right: 10%; animation-delay: 2s; }
+        .shape-square { width: 120px; height: 120px; border: 5px solid #ffcc00; bottom: 10%; left: 20%; animation-delay: 4s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        /* --- Типографика --- */
+        h1, h2, h3 { text-transform: uppercase; letter-spacing: 2px; }
+        h1 { font-size: 3.5rem; font-weight: 900; text-align: center; margin-bottom: 10px; text-shadow: 0 0 20px rgba(255, 0, 85, 0.7); }
+        h2 { font-size: 2rem; color: #ff0055; border-bottom: 2px solid #ff0055; display: inline-block; padding-bottom: 5px; }
+        
+        .subtitle { text-align: center; font-size: 1.2rem; color: #ccc; margin-bottom: 50px; }
+
+        /* --- Контейнер --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* --- Карточки сезонов --- */
+        .season-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s forwards;
+        }
+
+        .season-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.3);
+            border-color: #ff0055;
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .season-img {
+            width: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+            max-height: 450px;
+            border: 2px solid #444;
+            background-color: #222; /* Заглушка, если картинка не загрузится */
+        }
+
+        .season-info h3 { color: #00ffcc; margin-top: 0; font-size: 1.8rem; }
+        .season-info p { line-height: 1.6; color: #ddd; }
+        .tag { display: inline-block; background: #ff0055; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-right: 10px; }
+
+        /* --- Секция "Где снимали" --- */
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .location-item {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #00ffcc;
+        }
+        .location-item h4 { margin-top: 0; color: #00ffcc; }
+
+        /* --- Финальное послание для сестры --- */
+        .secret-message {
+            margin-top: 80px;
+            text-align: center;
+            background: linear-gradient(45deg, #ff0055, #ffcc00);
+            padding: 50px 20px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255, 0, 85, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 30px rgba(255, 0, 85, 0.5); }
+            50% { box-shadow: 0 0 60px rgba(255, 0, 85, 0.9); }
+            100% { box-shadow: 0 0 30px rgba(255, 0, 85, 0.5); }
+        }
+
+        .secret-message h2 { color: white; border: none; font-size: 2.5rem; margin-top: 0; }
+        .secret-message p { font-size: 1.3rem; font-weight: bold; color: #000; }
+        
+        .btn-stop {
+            display: inline-block;
+            background: #000;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-stop:hover {
+            background: #333;
+            transform: scale(1.1);
+        }
+
+        /* --- Анимация появления при скролле --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Адаптивность --- */
+        @media (min-width: 768px) {
+            .season-card { flex-direction: row; align-items: center; }
+            .season-img { width: 50%; }
+            .season-info { width: 50%; padding-left: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Анимированный фон -->
+    <div class="bg-animation"></div>
+    <div class="floating-shape shape-circle"></div>
+    <div class="floating-shape shape-triangle"></div>
+    <div class="floating-shape shape-square"></div>
+
+    <div class="container">
+        <!-- Заголовок -->
+        <h1>Игра в Кальмара</h1>
+        <p class="subtitle">Полный гид по 1, 2 и 3 сезонам (4 сезон еще не вышел!)</p>
+
+        <!-- Сезон 1 (картинка-мем с Ли Чжон Чжэ) -->
+        <div class="season-card reveal">
+            <!-- Убедись, что картинка называется pic1.jpg -->
+            <img src="pic1.jpg" alt="Игра в кальмара 1 сезон" class="season-img">
+            <div class="season-info">
+                <span class="tag">Сезон 1</span>
+                <h3>Начало игры</h3>
+                <p>Сон Ки Хун, погрязший в долгах, получает загадочное приглашение на игру. Вместе с 455 другими игроками он борется за приз в 45,6 миллиарда вон. Но цена проигрыша — смерть. Этот сезон познакомил нас с жестокими правилами и знаменитыми играми: «Тише едешь — дальше будешь» и «Сахарные соты».</p>
+            </div>
+        </div>
+
+        <!-- Сезон 2 (твой постер с надписью "오징어 게임 2") -->
+        <div class="season-card reveal">
+            <!-- Убедись, что картинка называется pic2.jpg -->
+            <img src="pic2.jpg" alt="Игра в кальмара 2 сезон" class="season-img">
+            <div class="season-info">
+                <span class="tag">Сезон 2</span>
+                <h3>Месть продолжается</h3>
+                <p>Ки Хун возвращается в игру, чтобы отомстить организаторам и разрушить систему изнутри. Новые правила, новые лица и шокирующие союзы. Второй сезон раскрывает тайны Фронтмена и показывает, что игра гораздо масштабнее, чем казалось.</p>
+            </div>
+        </div>
+
+        <!-- Сезон 3 (твой постер "Squid Game 3") -->
+        <div class="season-card reveal">
+            <!-- Убедись, что картинка называется pic3.jpg -->
+            <img src="pic3.jpg" alt="Игра в кальмара 3 сезон" class="season-img">
+            <div class="season-info">
+                <span class="tag">Сезон 3</span>
+                <h3>Последняя игра</h3>
+                <p>Финальная глава истории. Ки Хун и Фронтмен сталкиваются лицом к лицу. Смогут ли выжившие разрушить игру навсегда, или цикл насилия никогда не прекратится? Этот сезон обещает быть самым эмоциональным и кровавым.</p>
+            </div>
+        </div>
+
+        <!-- Сезон 4 -->
+        <div class="season-card reveal" style="border-color: #666; opacity: 0.7;">
+            <div style="width: 100%; text-align: center; padding: 40px;">
+                <h3 style="color: #888; font-size: 3rem; margin: 0;">?</h3>
+                <p style="color: #aaa; font-size: 1.2rem;">Сезон 4 пока не вышел. Официальная дата неизвестна.</p>
+            </div>
+        </div>
+
+        <!-- Где снимали -->
+        <div class="reveal" style="margin-top: 60px;">
+            <h2>📍 Где снимали сериал?</h2>
+            <div class="locations-grid">
+                <div class="location-item">
+                    <h4>Студия в Тэджоне</h4>
+                    <p>Большинство сцен с испытаниями снимались в огромных павильонах, построенных специально для сериала. Декорации были настолько масштабными, что напоминали настоящие города.</p>
+                </div>
+                <div class="location-item">
+                    <h4>Остров Чечжу</h4>
+                    <p>Некоторые сцены на открытом воздухе, включая пляжи и скалы, снимались на живописном острове Чечжу на юге Кореи.</p>
+                </div>
+                <div class="location-item">
+                    <h4>Сеул</h4>
+                    <p>Сцены в реальном мире (квартиры, улицы, метро) снимались в различных районах Сеула, включая старые жилые кварталы.</p>
+                </div>
+                <div class="location-item">
+                    <h4>Павильоны Netflix</h4>
+                    <p>Специально для 2 и 3 сезонов были построены новые павильоны с еще более сложными декорациями, включая лабиринты и комнаты для голосования.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секретное послание для сестры -->
+        <div class="secret-message reveal" id="secret">
+            <h2>СТОП! ИГРА ОКОНЧЕНА! 🛑</h2>
+            <p>Дорогая сестренка! Ты уже пересмотрела «Игру в кальмара» 1, 2 и 3 сезоны миллион раз! 😱</p>
+            <p>Пожалуйста, сделай перерыв! Посмотри что-нибудь доброе, например, мультики или комедию. Игра в кальмара — это круто, но твои глаза и мозг заслуживают отдыха! 😉</p>
+            <button class="btn-stop" onclick="alert('Ты нажала на кнопку! Теперь ты обязана посмотреть что-то другое! 😄')">Я обещаю сделать перерыв!</button>
+        </div>
+
+        <p style="text-align: center; color: #555; margin-top: 40px; font-size: 0.8rem;">Сайт создан с любовью для самой лучшей сестры. 2026</p>
+    </div>
+
+    <!-- JavaScript для анимации при скролле и конфетти -->
+    <script>
+        // Анимация появления элементов при скролле
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 150;
+
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Проверить при загрузке
+
+        // Простая функция конфетти при клике на кнопку
+        document.querySelector('.btn-stop').addEventListener('click', function() {
+            // Создаем конфетти
+            for (let i = 0; i < 50; i++) {
+                createConfetti();
+            }
+        });
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.top = '-10px';
+            confetti.style.borderRadius = '50%';
+            confetti.style.zIndex = '9999';
+            confetti.style.pointerEvents = 'none';
+            document.body.appendChild(confetti);
+
+            const animation = confetti.animate([
+                { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                { transform: `translateY(100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+            ], {
+                duration: Math.random() * 2000 + 1500,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            });
+
+            animation.onfinish = () => confetti.remove();
+        }
+    </script>
+</body>
+</html>
